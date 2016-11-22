@@ -30,17 +30,18 @@ namespace DlhSoft.ChartLibrary
                 return;
             var rowCount = rows.Length;
             var columnNames = Data.ColumnNames;
-            var columnCount = Math.Max(columnNames != null ? columnNames.Length : 0, rows.Max(r => r.Values != null ? r.Values.Length : 0));
-            var maxValue = rows.SelectMany(r => r.Values ?? new float[0]).Max();
+            var columnCount = Math.Max(columnNames != null ? columnNames.Length : 0, rows.Any() ? rows.Max(r => r.Values != null ? r.Values.Length : 0) : 0);
+            var values = rows.SelectMany(r => r.Values ?? new float[0]);
+            var maxValue = values.Any() ? values.Max() : 0;
             for (var i = 0; i < rowCount; i++)
             {
                 var row = rows[i];
                 for (var j = 0; j < columnCount; j++)
                 {
-                    var values = row.Values;
-                    if (values.Length <= j)
+                    var rowValues = row.Values;
+                    if (rowValues.Length <= j)
                         continue;
-                    var value = values[j];
+                    var value = rowValues[j];
                     var cube = GetCube(i, j);
                     var rowName = row.Name;
                     rowName = !string.IsNullOrEmpty(rowName) ? rowName : string.Format(CultureInfo.InvariantCulture, "[{0}]", i);
